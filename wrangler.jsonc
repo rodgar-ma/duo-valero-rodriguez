@@ -13,7 +13,4 @@
     "directory": "./dist",
     "not_found_handling": "404-page",
   },
-  "vars": {
-    "PNPM_VERSION": "12.14.0",
-  },
 }
