@@ -4,22 +4,21 @@ on:
   pull_request:
     branches: [main]
 
-# Un solo despliegue a dev a la vez
-concurrency:
-  group: ci-dev
-  cancel-in-progress: true
-
 permissions:
   contents: read
 
 jobs:
-  ci:
+  # Comprobaciones de cada PR. Un push nuevo cancela solo las de su propia PR.
+  check:
     runs-on: ubuntu-latest
+    concurrency:
+      group: check-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v5
 
       # Lee la versión de pnpm del campo packageManager de package.json
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v5
         with:
@@ -30,6 +29,33 @@ jobs:
 
       - name: Check (astro check + Prettier)
         run: pnpm check
+
+      - name: Build
+        run: pnpm build
+
+  # Despliegue en dev, compartido por todas las PR: gana el último.
+  # Nunca se cancela a medias. Las PR desde forks no tienen secretos y no despliegan.
+  deploy-dev:
+    needs: check
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-dev
+      cancel-in-progress: false
+    environment:
+      name: dev
+      url: https://dev.duovalerorodriguez.es/
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm build
