@@ -12,7 +12,6 @@
     "preview": "astro preview",
     "check": "astro check && prettier --check . --ignore-path .gitignore --ignore-path .prettierignore --ignore-path .git/info/exclude",
     "format": "prettier --write . --ignore-path .gitignore --ignore-path .prettierignore --ignore-path .git/info/exclude",
-    "ship": "astro build && wrangler deploy",
     "astro": "astro"
   },
   "dependencies": {
