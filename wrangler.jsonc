@@ -1,16 +1,35 @@
+// Dos Workers:
+//  - Producción (este nivel): duovalerorodriguez.es. Lo despliega deploy.yml al hacer merge a main.
+//  - Dev (env.preview): dev.duovalerorodriguez.es. Lo despliega ci.yml en cada pull request.
+// Los bindings (DB, MEDIA, SESSION) no se heredan entre entornos: cada uno declara los suyos.
+// Producción no tiene bindings todavía: se añaden al instalar EmDash.
 {
   "name": "duo-valero-rodriguez",
   "compatibility_date": "2026-10-21",
   "workers_dev": false,
-  "preview_urls": true,
+  "preview_urls": false,
   "routes": [
-    {
-      "pattern": "dev.duovalerorodriguez.es",
-      "custom_domain": true,
-    },
+    { "pattern": "duovalerorodriguez.es", "custom_domain": true },
+    { "pattern": "www.duovalerorodriguez.es", "custom_domain": true },
   ],
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page",
+  },
+  "env": {
+    "preview": {
+      "workers_dev": false,
+      "preview_urls": false,
+      "routes": [{ "pattern": "dev.duovalerorodriguez.es", "custom_domain": true }],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "duo-valero-rodriguez-preview",
+          "database_id": "14a5ee7d-4c13-4a7e-ab65-046e1829bef0",
+        },
+      ],
+      "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "duo-valero-rodriguez-media-preview" }],
+      "kv_namespaces": [{ "binding": "SESSION", "id": "4bfc5ecf8917414881f9010560ec886e" }],
+    },
   },
 }
