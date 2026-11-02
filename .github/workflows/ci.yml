@@ -4,13 +4,13 @@ on:
   pull_request:
     branches: [main]
 
+# Un solo despliegue a dev a la vez
 concurrency:
-  group: ci-${{ github.event.pull_request.number }}
+  group: ci-dev
   cancel-in-progress: true
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   ci:
@@ -34,23 +34,8 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Upload preview version
-        id: preview
+      - name: Deploy to dev.duovalerorodriguez.es
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          set -o pipefail
-          pnpm wrangler versions upload --env preview | tee wrangler-output.txt
-          url=$(grep -oE 'https://[^ ]+\.workers\.dev' wrangler-output.txt | tail -n 1 || true)
-          echo "url=$url" >> "$GITHUB_OUTPUT"
-
-      - name: Comment preview URL
-        if: steps.preview.outputs.url != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PREVIEW_URL: ${{ steps.preview.outputs.url }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          gh pr comment "$PR_NUMBER" --edit-last --create-if-none \
-            --body "Preview: $PREVIEW_URL (commit ${GITHUB_SHA::7})"
+        run: pnpm wrangler deploy --env preview

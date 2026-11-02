@@ -1,2 +1,7 @@
-/*
+# dev nunca se indexa
+https://dev.duovalerorodriguez.es/*
+  X-Robots-Tag: noindex
+
+# Quitar este bloque el día del lanzamiento
+https://duovalerorodriguez.es/*
   X-Robots-Tag: noindex
