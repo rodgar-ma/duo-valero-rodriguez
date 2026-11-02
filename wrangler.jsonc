@@ -13,4 +13,40 @@
     "directory": "./dist",
     "not_found_handling": "404-page",
   },
+  "env": {
+    "preview": {
+      "workers_dev": true,
+      "preview_urls": true,
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "duo-valero-rodriguez-preview",
+          "database_id": "<ID de D1>",
+        },
+      ],
+      "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "duo-valero-rodriguez-media-preview" }],
+      "kv_namespaces": [{ "binding": "SESSION", "id": "<ID de KV>" }],
+      "images": { "binding": "IMAGES" },
+      "vars": { "SITE_URL": "https://duo-valero-rodriguez-preview.<tu-subdominio>.workers.dev" },
+    },
+  },
+  "d1_databases": [
+    {
+      "binding": "duo_valero_rodriguez_preview",
+      "database_name": "duo-valero-rodriguez-preview",
+      "database_id": "14a5ee7d-4c13-4a7e-ab65-046e1829bef0",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "duo-valero-rodriguez-media-preview",
+      "binding": "duo_valero_rodriguez_media_preview",
+    },
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "duo_valero_rodriguez_session_preview",
+      "id": "4bfc5ecf8917414881f9010560ec886e",
+    },
+  ],
 }
